@@ -2,6 +2,7 @@ package com.moneytrack.moneytrack.entitiy;
 
 import jakarta.persistence.*;
 
+import java.time.Instant;
 import java.util.Arrays;
 
 @Entity
@@ -46,6 +47,18 @@ public class ExpenseTrackerEntity {
 
     public Integer getAmount() {
         return amount;
+    }
+
+    @Column(nullable = false, updatable = false)
+    private Instant createdAt;
+
+    @PrePersist
+    void onCreate() {
+        createdAt = Instant.now();
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
     }
     
 }

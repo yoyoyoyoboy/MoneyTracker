@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.time.Instant;
 
 @RestController
 @RequestMapping("/expenseTracker")
@@ -20,8 +21,10 @@ public class ExpenseTrackerController {
     }
 
     @GetMapping
-    public List<ExpenseTrackerResponse> getAllExpenses() {
-        return service.getAllExpenses();
+    public List<ExpenseTrackerResponse> getAllExpenses(
+            @RequestParam(name = "from", required = false) Instant from,
+            @RequestParam(name = "to", required = false) Instant to) {
+        return service.getExpenses(from, to);
     }
 
     @PostMapping

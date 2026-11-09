@@ -1,8 +1,9 @@
-import { Component, computed, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, computed, DestroyRef, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CurrencyPipe, DecimalPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { HttpErrorResponse } from '@angular/common/http';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { Expense, ExpenseService } from './expense.service';
 import { IconComponent } from './icon.component';
 
@@ -14,6 +15,9 @@ import { IconComponent } from './icon.component';
 export class AppComponent {
   private readonly api = inject(ExpenseService);
   private readonly fb = inject(FormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
+  private loadSubscription?: Subscription;
+  readonly selectedMonth = signal(this.currentMonth());
   readonly expenseDialog = viewChild<ElementRef<HTMLDialogElement>>('expenseDialog');
   readonly deleteDialog = viewChild<ElementRef<HTMLDialogElement>>('deleteDialog');
   readonly expenses = signal<Expense[]>([]);
@@ -52,10 +56,34 @@ export class AppComponent {
 
   constructor() { this.loadExpenses(); }
 
+  private currentMonth() {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  }
+
+  changeMonth(month: string) {
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(month) || month.startsWith('0000') || month === this.selectedMonth()) return;
+    this.selectedMonth.set(month);
+    this.loadExpenses();
+  }
+
   loadExpenses() {
+    this.loadSubscription?.unsubscribe();
+    const [year, month] = this.selectedMonth().split('-').map(Number);
+    // Local calendar boundaries, serialized as UTC instants. The upper bound is exclusive.
+    const from = new Date(0);
+    from.setFullYear(year, month - 1, 1);
+    from.setHours(0, 0, 0, 0);
+    const to = new Date(from);
+    to.setMonth(to.getMonth() + 1);
     this.loading.set(true);
+    this.loaded.set(false);
+    this.expenses.set([]);
     this.error.set('');
-    this.api.getAll().pipe(finalize(() => this.loading.set(false))).subscribe({
+    this.loadSubscription = this.api.getAll(from.toISOString(), to.toISOString()).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.loading.set(false))
+    ).subscribe({
       next: expenses => { this.expenses.set(expenses); this.loaded.set(true); },
       error: () => this.error.set('We couldn’t load your expenses. Check that the backend is running and try again.')
     });
@@ -78,11 +106,10 @@ export class AppComponent {
     this.api.create({ ...values, title: values.title.trim(), description: values.description.trim(), amount: values.amount! })
       .pipe(finalize(() => this.saving.set(false))).subscribe({
         next: expense => {
-          this.expenses.update(expenses => [...expenses, expense]);
           this.summaryCurrency.set(expense.currency);
           this.expenseDialog()?.nativeElement.close();
           this.notice.set('Expense added successfully.');
-          if (!this.loaded()) this.loadExpenses();
+          this.loadExpenses();
         },
         error: () => this.formError.set('Your expense couldn’t be saved. Please check your connection and try again.')
       });

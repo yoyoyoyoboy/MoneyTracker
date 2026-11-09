@@ -16,7 +16,9 @@ export class ExpenseService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiUrl}/expenseTracker`;
 
-  getAll() { return this.http.get<Expense[]>(this.url); }
+  getAll(from: string, to: string) {
+    return this.http.get<Expense[]>(this.url, { params: { from, to } });
+  }
   create(expense: NewExpense) { return this.http.post<Expense>(this.url, expense); }
   delete(id: number) { return this.http.delete<void>(`${this.url}/${id}`); }
 }
