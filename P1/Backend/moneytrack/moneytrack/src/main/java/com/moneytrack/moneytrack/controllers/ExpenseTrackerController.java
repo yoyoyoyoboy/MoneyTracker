@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/expenseTracker")
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = {"http://localhost:4200", "https://moneytracker-2rv2.onrender.com"})
 public class ExpenseTrackerController {
     public final ExpenseTrackerService service;
 
