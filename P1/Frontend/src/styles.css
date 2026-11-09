@@ -10,3 +10,71 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation:none!important;transition:none!important}}
 
 .month-toolbar{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:22px}.month-toolbar label{font-size:12px;font-weight:600}.month-toolbar input{border:1px solid var(--border);border-radius:7px;background:white;color:#425447;padding:9px 12px;max-width:100%}.month-toolbar span{font-size:11px;color:#849087}
+
+/* Theme controls stay accessible on small screens. */
+.topbar-actions{display:flex;align-items:center;gap:18px}
+.theme-toggle{min-height:34px;padding:7px 10px;font-size:11px;gap:7px}
+.theme-toggle app-icon{width:16px;height:16px}
+@media(max-width:460px){.topbar-actions{gap:8px}.theme-toggle span{display:none}.theme-toggle{min-width:34px}}
+
+/* Dark palette applies to the document so native controls and dialogs match. */
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  color:#e1ebe5;
+  background:#101b17;
+  --green:#8cd5b5;
+  --muted:#a5b7ac;
+  --border:#34483c;
+  --dark-surface:#19271f;
+  --dark-raised:#22352a;
+  --dark-text:#e1ebe5;
+  --dark-muted:#a5b7ac;
+}
+[data-theme="dark"] :is(.sidebar,.stat-card,.expense-panel,.insight-card,.modal){background:var(--dark-surface);color:var(--dark-text)}
+[data-theme="dark"] .topbar{background:#15221c}
+[data-theme="dark"] :is(.subtle,.filter-select,.search-field,.month-toolbar input,.form-field input,.form-field textarea,.form-field select){background:#15221c;color:var(--dark-text);border-color:var(--border)}
+[data-theme="dark"] :is(.workspace-label,.nav-item,.sidebar-note p,.sidebar-footer div>span,.breadcrumb,.personal-tag,.page-heading p,.eyebrow,.stat-label,.stat-card p,.panel-heading p,.icon-button,.expense-name p,.table-footer,.insight-subtitle,.snapshot-footer,.snapshot-empty p,.snapshot-empty p span,.page-footer,.empty-state p,.modal-subtitle,.form-field small,.field-hint,.month-toolbar span){color:var(--dark-muted)}
+[data-theme="dark"] :is(.breadcrumb>span,.expense-amount,.form-field){color:var(--dark-text)}
+[data-theme="dark"] :is(.nav-item:hover,.subtle:hover,.icon-button:hover){background:var(--dark-raised);color:var(--green)}
+[data-theme="dark"] .nav-item.active{background:#254535;color:var(--green)}
+[data-theme="dark"] .brand-mark{background:#176d55;color:#fff}
+[data-theme="dark"] .nav-dot{background:var(--green)}
+[data-theme="dark"] .primary{background:#8cd5b5;color:#102a1e;box-shadow:none}
+[data-theme="dark"] .primary:hover{background:#a5e5c9}
+[data-theme="dark"] h1>span{color:var(--green)}
+[data-theme="dark"] .total-card{background:#205c47}
+[data-theme="dark"] :is(.mint,.leaf-mark,.empty-icon,.modal-icon){background:#294433;color:#a4d7aa}
+[data-theme="dark"] .peach{background:#45382a;color:#e4ba8d}
+[data-theme="dark"] :is(.count-badge,.currency-badge){background:var(--dark-raised);border-color:var(--border);color:#becfbc}
+[data-theme="dark"] th{background:#15221c;color:#b0c2ac;border-color:var(--border)}
+[data-theme="dark"] :is(td,.sidebar-footer,.snapshot-footer,.modal-actions){border-color:var(--border)}
+[data-theme="dark"] .expense-avatar{background:#2e412c;color:#bbd6a9}
+[data-theme="dark"] .expense-avatar.tone-1{background:#47382b;color:#e1bc93}
+[data-theme="dark"] .expense-avatar.tone-2{background:#373149;color:#c8b8e0}
+[data-theme="dark"] .avatar{background:#463f30;color:#e1c99e}
+[data-theme="dark"] .bar-track{background:#2a3b2e}
+[data-theme="dark"] .bar-fill{background:#94c29a}
+[data-theme="dark"] .breakdown-item:nth-child(2) .bar-fill{background:#b1c68f}
+[data-theme="dark"] .breakdown-item:nth-child(3) .bar-fill{background:#d0bb94}
+[data-theme="dark"] .breakdown-item:nth-child(4) .bar-fill{background:#b6adc7}
+[data-theme="dark"] :is(.breakdown-item span,.insight-heading app-icon){color:#b6c8ac}
+[data-theme="dark"] .mini-chart i{background:#3a5134}
+[data-theme="dark"] .mini-chart i:nth-child(even){background:#506a44}
+[data-theme="dark"] .tip-card{background:#253522;border-color:#3d5035}
+[data-theme="dark"] .tip-card h3{color:#cee1b9}
+[data-theme="dark"] :is(.tip-card p,.tip-eyebrow){color:#b1c4a0}
+[data-theme="dark"] .tip-doodle{color:#384b2f}
+[data-theme="dark"] .note-line{background:#5f7952}
+[data-theme="dark"] .notice{background:#203e2c;border-color:#41654a;color:#b7ddbb}
+[data-theme="dark"] :is(.error-banner,.form-error){background:#432d24;border-color:#74503e;color:#f1c4a4}
+[data-theme="dark"] :is(.danger-icon,.delete-button:hover){background:#492e2a;color:#ffb7a7}
+[data-theme="dark"] .danger{background:#c96859;color:#fff}
+[data-theme="dark"] .danger:hover{background:#b45749}
+[data-theme="dark"] .field-error{color:#ffb7a7}
+[data-theme="dark"] .form-field>span{color:var(--green)}
+[data-theme="dark"] :is(.search-field input,.currency-select option){color:var(--dark-text)}
+[data-theme="dark"] .currency-select option{background:var(--dark-surface)}
+[data-theme="dark"] :is(.search-field input,.form-field input,.form-field textarea)::placeholder{color:#91a496}
+[data-theme="dark"] .skeleton{background:linear-gradient(90deg,#26392c,#344a38,#26392c);background-size:200% 100%}
+[data-theme="dark"] .modal{border-color:var(--border);box-shadow:0 25px 100px #0007}
+[data-theme="dark"] .modal::backdrop{background:#0009}

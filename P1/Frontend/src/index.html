@@ -1,2 +1,11 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><title>Moneytrack · Your expenses, in focus</title><base href="/"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#176d55"><meta name="description" content="A little clarity for your everyday spending. Add, browse, and manage your expenses with Moneytrack."></head><body><app-root></app-root></body></html>
+<html lang="en"><head><meta charset="utf-8"><title>Moneytrack · Your expenses, in focus</title><base href="/"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="theme-color" content="#176d55"><meta name="description" content="A little clarity for your everyday spending. Add, browse, and manage your expenses with Moneytrack."><script>
+  (() => {
+    let saved;
+    try { saved = localStorage.getItem('moneytrack-theme'); } catch {}
+    const theme = saved === 'light' || saved === 'dark' ? saved : window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+    if (theme === 'dark') document.querySelector('meta[name="theme-color"]').content = '#101b17';
+  })();
+</script></head><body><app-root></app-root></body></html>

@@ -6,6 +6,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { finalize, Subscription } from 'rxjs';
 import { Expense, ExpenseService } from './expense.service';
 import { IconComponent } from './icon.component';
+import { ThemeService } from './theme.service';
 
 @Component({
   selector: 'app-root',
@@ -13,6 +14,7 @@ import { IconComponent } from './icon.component';
   templateUrl: './app.component.html'
 })
 export class AppComponent {
+  readonly theme = inject(ThemeService);
   private readonly api = inject(ExpenseService);
   private readonly fb = inject(FormBuilder);
   private readonly destroyRef = inject(DestroyRef);

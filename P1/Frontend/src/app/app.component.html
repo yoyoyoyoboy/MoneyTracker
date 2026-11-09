@@ -9,7 +9,7 @@
   </aside>
 
   <div class="main-shell">
-    <header class="topbar"><div class="breadcrumb">Workspace <app-icon name="chevron" /><span>Overview</span></div><span class="personal-tag"><span></span>Personal workspace</span></header>
+    <header class="topbar"><div class="breadcrumb">Workspace <app-icon name="chevron" /><span>Overview</span></div><div class="topbar-actions"><span class="personal-tag"><span></span>Personal workspace</span><button class="button subtle theme-toggle" type="button" (click)="theme.toggle()" [attr.aria-label]="theme.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'" [attr.title]="theme.theme() === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'"><app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" /><span>{{ theme.theme() === 'dark' ? 'Light mode' : 'Dark mode' }}</span></button></div></header>
     <main id="overview">
       <section class="page-heading"><div><div class="eyebrow">A LITTLE CLARITY, EVERY DAY</div><h1>Your expenses, in focus<span>.</span></h1><p>Keep track of the little things. See the bigger picture.</p></div><button class="button primary" (click)="openCreate()"><app-icon name="plus" />Add expense</button></section>
 
