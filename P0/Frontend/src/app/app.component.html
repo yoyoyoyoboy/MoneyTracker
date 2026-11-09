@@ -1,0 +1,58 @@
+@if (vm$ | async; as vm) {
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Taskspace home"><span class="brand-icon" aria-hidden="true">✓</span> taskspace<span class="brand-dot">.</span></a>
+  <div class="workspace-label"><span class="status-dot"></span> Your personal workspace</div>
+  <span class="avatar" aria-label="Personal workspace">ME</span>
+</header>
+
+<main>
+  <section class="page-heading" aria-labelledby="page-title">
+    <div><p class="eyebrow">A LITTLE MORE ORGANIZED</p><h1 id="page-title">Make room for <span>what matters.</span></h1><p class="intro">Capture your ideas. Take it one task at a time.</p></div>
+    <p class="date"><span aria-hidden="true">◷</span> {{ today | date:'EEEE, MMM d' }}</p>
+  </section>
+
+  <section class="overview" aria-label="Task overview">
+    <div class="stat"><span class="stat-icon total-icon" aria-hidden="true">▤</span><div><span class="stat-label">Total tasks</span><strong>{{ vm.tasks.length | number:'2.0-0' }}</strong></div><span class="stat-note">Everything in one place</span></div>
+  </section>
+
+  <div class="workspace">
+    <aside class="create-panel">
+      <div class="panel-heading"><span class="small-icon" aria-hidden="true">＋</span><div><h2>Create a task</h2><p>Good things start with a plan.</p></div></div>
+      <form #taskForm="ngForm" (ngSubmit)="addTask(taskForm)" novalidate>
+        <fieldset class="task-fields" [disabled]="vm.saving">
+        <div class="field"><label for="title">Task title <span class="required">*</span></label><input id="title" name="title" type="text" placeholder="What needs to get done?" [(ngModel)]="draft.title" #title="ngModel" required maxlength="120" [attr.aria-invalid]="(title.touched || taskForm.submitted) && !draft.title.trim()" aria-describedby="title-error"><div class="field-meta"><span id="title-error" class="error">@if ((title.touched || taskForm.submitted) && !draft.title.trim()) { Please enter a task title. }</span><span>{{ draft.title.length }}/120</span></div></div>
+        <div class="field"><label for="description">Description <span class="optional">optional</span></label><textarea id="description" name="description" rows="4" placeholder="Add a few details, links, or notes…" [(ngModel)]="draft.description" maxlength="2000"></textarea></div>
+        <button class="primary-button" type="submit" [disabled]="vm.saving"><span aria-hidden="true">＋</span> {{ vm.saving ? 'Creating…' : 'Create task' }} <span class="button-arrow" aria-hidden="true">↗</span></button>
+        <button class="reset-button" type="button" [disabled]="vm.saving" (click)="resetForm(taskForm)">Clear form</button>
+        </fieldset>
+        @if (vm.createError) { <p class="error" role="alert">{{ vm.createError }}</p> }
+      </form>
+      <div class="form-tip"><span aria-hidden="true">✧</span><p>A clear task is a great first step.<br>Keep it small. Make it doable.</p></div>
+    </aside>
+
+    <section class="tasks-panel" aria-labelledby="tasks-title">
+      <div class="list-heading"><div><h2 id="tasks-title">Your tasks <span class="count">{{ vm.tasks.length }}</span></h2><p>A clear view of everything on your plate.</p></div><span class="list-view" aria-hidden="true">☷</span></div>
+      <div class="list-toolbar"><div class="search-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input type="search" aria-label="Search tasks" placeholder="Search tasks…" [ngModel]="vm.search" (ngModelChange)="setSearch($event)"></div></div>
+      @if (vm.loadError) {
+        <p class="api-message error" role="alert">{{ vm.loadError }} <button type="button" (click)="loadTasks()">Retry</button></p>
+      }
+      @if (vm.loading) {
+        <p class="api-message" role="status">Loading tasks…</p>
+      } @else if (!vm.loadError || vm.tasks.length) {
+      <div class="task-list">
+        @for (task of vm.visibleTasks; track task.id) {
+          <article class="task-card">
+            <div class="task-content"><h3>{{ task.title }}</h3>@if (task.description) { <p class="task-description">{{ task.description }}</p> }</div>
+          </article>
+        } @empty {
+          <div class="empty-state"><div class="empty-illustration" aria-hidden="true"><span class="decoration one">✧</span><div class="paper"><span class="paper-line"><i>✓</i><b></b></span><span class="paper-line"><i>✓</i><b></b></span><span class="paper-line"><i></i><b></b></span></div><span class="decoration two">✧</span></div><h3>{{ vm.tasks.length ? 'No matching tasks' : 'A fresh start, a clear mind.' }}</h3><p>{{ vm.tasks.length ? 'Try a different search to find your tasks.' : 'Your next big thing starts with a small task.\nCreate your first one using the form.' }}</p>@if (vm.tasks.length) { <button class="empty-reset" type="button" (click)="setSearch('')">Show all tasks <span aria-hidden="true">→</span></button> } @else { <span class="empty-hint"><span aria-hidden="true">←</span> Your first task starts here</span> }</div>
+        }
+      </div>
+      }
+      <div class="list-footer"><span>{{ vm.visibleTasks.length }} of {{ vm.tasks.length }} tasks</span></div>
+    </section>
+  </div>
+  <footer class="page-footer"><span>Less clutter. More clarity.</span><span>Made for your everyday.</span></footer>
+  <p class="sr-only" role="status" aria-live="polite">{{ vm.announcement }}</p>
+</main>
+}
