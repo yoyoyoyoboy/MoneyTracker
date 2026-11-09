@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../environments/environment';
 
 export interface Expense {
   id: number;
@@ -13,7 +14,7 @@ export type NewExpense = Omit<Expense, 'id'>;
 @Injectable({ providedIn: 'root' })
 export class ExpenseService {
   private readonly http = inject(HttpClient);
-  private readonly url = '/expenseTracker';
+  private readonly url = `${environment.apiUrl}/expenseTracker`;
 
   getAll() { return this.http.get<Expense[]>(this.url); }
   create(expense: NewExpense) { return this.http.post<Expense>(this.url, expense); }

@@ -3,10 +3,12 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { AppComponent } from './app.component';
 import { Expense } from './expense.service';
+import { environment } from '../environments/environment';
 
 describe('Expense tracker', () => {
   let app: AppComponent;
   let http: HttpTestingController;
+  const expenseUrl = `${environment.apiUrl}/expenseTracker`;
   const expenses: Expense[] = [
     { id: 1, title: 'Groceries', description: 'Weekly shop', currency: 'INR', amount: 1000 },
     { id: 2, title: 'Coffee', description: 'Morning cup', currency: 'INR', amount: 200 },
@@ -26,7 +28,7 @@ describe('Expense tracker', () => {
   });
   afterEach(() => http.verify());
 
-  function load() { http.expectOne('/expenseTracker').flush(expenses); }
+  function load() { http.expectOne(expenseUrl).flush(expenses); }
 
   it('loads all expenses and keeps totals separate by currency', () => {
     load();
@@ -70,7 +72,7 @@ describe('Expense tracker', () => {
     app.form.setValue({ title: ' Lunch ', description: ' Meal ', currency: 'INR', amount: 250 });
     app.createExpense();
     app.createExpense(); // Ignore duplicate submissions while saving.
-    const request = http.expectOne('/expenseTracker');
+    const request = http.expectOne(expenseUrl);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual({ title: 'Lunch', description: 'Meal', currency: 'INR', amount: 250 });
     request.flush({ ...request.request.body, id: 4 });
@@ -83,7 +85,7 @@ describe('Expense tracker', () => {
     load();
     app.pendingDelete.set(expenses[0]);
     app.deleteExpense();
-    const request = http.expectOne('/expenseTracker/1');
+    const request = http.expectOne(`${expenseUrl}/1`);
     expect(request.request.method).toBe('DELETE');
     request.flush({}, { status: 405, statusText: 'Method Not Allowed' });
     expect(app.expenses()).toHaveLength(3);
@@ -96,13 +98,13 @@ describe('Expense tracker', () => {
     app.pendingDelete.set(expenses[0]);
     app.deleteExpense();
     expect(app.expenses()).toHaveLength(3);
-    http.expectOne('/expenseTracker/1').flush(null);
+    http.expectOne(`${expenseUrl}/1`).flush(null);
     expect(app.expenses().map(e => e.id)).toEqual([2, 3]);
     expect(app.total()).toBe(200);
   });
 
   it('shows a recoverable load error instead of a successful empty list', () => {
-    http.expectOne('/expenseTracker').error(new ProgressEvent('error'));
+    http.expectOne(expenseUrl).error(new ProgressEvent('error'));
     expect(app.loaded()).toBe(false);
     expect(app.loading()).toBe(false);
     expect(app.error()).toContain('backend');
